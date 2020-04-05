@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--把对象的创建交给Spring来管理-->
+    <!--Spring对bean的管理细节-->
+
+
+    <!--创建Bean的三种方式-->
+    <!--方式一：使用默认构造函数创建-->
+    <!--<bean id="accountService" class="com.study.service.impl.AccountServiceImpl"></bean>-->
+
+    <!--方式二：使用普通工厂中的方法创建对象（使用某个类中的方法创建对象）-->
+<!--    <bean id="instanceFactory" class="com.study.factory.InstanceFactory"></bean>-->
+<!--        &lt;!&ndash;首先在xml中声明工厂类（或者某个具体类）的Bean配置&ndash;&gt;-->
+<!--        &lt;!&ndash;然后在xml中通过factory-bean和factory-method参数来调用工厂中的创建方法&ndash;&gt;-->
+<!--    <bean id="accountService" factory-bean="instanceFactory" factory-method="getAccountService"></bean>-->
+
+    <!--方式三：使用静态工厂中的静态方法创建对象（使用某个类中的静态方法创建对象）-->
+<!--    <bean id="accountService" class="com.study.factory.StaticFactory" factory-method="getAccountService"></bean>-->
+
+
+    <!--Bean的作用范围调整-->
+    <!--bean标签的scope属性：用于指定bean的作用范围。可选取值有：
+        - singleton:
+        - prototype:
+        - request:
+        - sessionL:
+        - global-session:
+    -->
+<!--    <bean id="accountService" class="com.study.service.impl.AccountServiceImpl" scope="prototype"></bean>-->
+
+
+    <!--bean对象的生命周期-->
+    <!--
+        单例对象(scope="singleton")：单例对象的生命周期与容器相同
+            出生：当Spring容器创建时，对象就被创建
+            活着：容器存在，单例对象就还在
+            死亡：容器销毁，单例对象释放
+        多例(scope="prototype")对象：
+            出生：当使用到对象时，Spring框架才会创建实例对象
+            活着：对象只要是在被使用的过程中一直存活
+            死亡：当对象长时间不用，且没有别的对象引用它时，由Java的垃圾回收器回收。
+    -->
+    <bean id="accountService" class="com.study.service.impl.AccountServiceImpl" scope="prototype"
+            init-method="init" destroy-method="destroy"></bean>
+</beans>
+
