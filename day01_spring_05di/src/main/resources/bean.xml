@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--把对象的创建交给Spring来管理-->
+
+    <!--Spring中的依赖注入-->
+        <!--
+            依赖注入能注入的数据有三类：
+                1、基本类型和String
+                2、其他的Bean类型（在配置文件或者注解中配置过的bean）
+                3、复杂类型（集合类型）
+            注入的方式有三种：
+                1、使用构造函数提供
+                2、使用set方法提供
+                3、使用注解提供
+        -->
+
+    <!--方法一：使用构造函数注入（AccountServiceImpl）-->
+    <!--
+        借助bean标签中的标签：constructor-arg
+            标签中的属性有：
+                type:指定要注入的数据类型，该数据类型也是构造函数中某个或某些参数的类型
+                index:用于指定要注入的数据在构造函数参数中的位置，从0开始
+                name:用于指定给构造函数中指定名称的参数赋值【常用】
+                    - 以上三者用于指定给构造函数中哪个参数赋值
+                value: 用于给基本类型和String类型提供值的
+                ref: 引用关联的其他bean类型数据，它指的是在Spring的IoC核心容器中出现过的Bean对象
+    -->
+    <bean id="accountService" class="com.study.service.impl.AccountServiceImpl" >
+        <constructor-arg name="name" value="李白"  ></constructor-arg>
+        <constructor-arg name="age" value="18"></constructor-arg>
+            <!--注入Date类型时不能只输入一个字符串"1970-01-01"，Spring无法完成类型转换-->
+            <!--可以再在下面写一个Date类的bean,并在此通过<ref>id引用-->
+        <constructor-arg name="birthday" ref="now"></constructor-arg>
+    </bean>
+    <!--配置一个日期对象-->
+        <!--Spring会创建一个该类型对象的实例存入容器中-->
+    <bean id="now" class="java.util.Date"></bean>
+
+
+
+
+    <!--方法二：使用set方法注入（AccountServiceImpl2）-->
+        <!--
+            使用property标签（在bean标签的内部）, 标签的属性有：
+                name:用于指定注入时所调用的set方法名, 名称是set方法名称去掉set，并改首字母为小写：setUsername -> username
+                value: 用于给基本类型和String类型提供值的
+                ref: 引用关联的其他bean类型数据，它指的是在Spring的IoC核心容器中出现过的Bean对象
+        -->
+    <bean id="accountService2" class="com.study.service.impl.AccountServiceImpl2" >
+        <property name="name" value="Test2" ></property>
+        <property name="age" value="21" ></property>
+        <property name="birthday" ref="now" ></property>
+    </bean>
+
+
+
+    <!--复杂类型数据的注入-->
+        <!--ref和value都无法用于复杂类型的注入-->
+        <!--
+            用于给List集合注入的标签有：list array set
+            用于给Map集合注入的标签有：map, props
+            结构相同，标签可以互换
+        -->
+    <bean id="accountService3" class="com.study.service.impl.AccountServiceImpl3" >
+        <property name="myStrs" >
+            <!--String[]的注入-->
+            <array>
+                <value>AAA</value>
+                <value>BBB</value>
+                <value>CCC</value>
+            </array>
+        </property>
+        <property name="myList" >
+            <!--List<String>的注入-->
+            <array>
+                <value>AAA</value>
+                <value>BBB</value>
+                <value>CCC</value>
+            </array>
+        </property>
+        <property name="mySet" >
+            <!--Set<String>的注入-->
+            <array>
+                <value>seta</value>
+                <value>setb</value>
+                <value>setc</value>
+            </array>
+        </property>
+        <property name="myMap">
+            <!--Map<String, String>的注入-->
+            <map>
+                <entry key="testA" value="aaa"></entry>
+                <entry key="testB">
+                    <value>bbb</value>
+                </entry>
+            </map>
+        </property>
+
+        <property name="myProps">
+            <props>
+                <prop key="testC">ccc</prop>
+                <prop key="testD">ddd</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>
+
