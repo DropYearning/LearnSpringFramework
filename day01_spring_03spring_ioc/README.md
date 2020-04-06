@@ -2,8 +2,20 @@
   学习Spring框架
   [Spring教程IDEA版-4天-2018黑马SSM-02_哔哩哔哩 (゜-゜)つロ 干杯~-bilibili](https://www.bilibili.com/video/BV1Sb411s7vP?from=search&seid=6126662563921252654)
 
+## Spring中xml文件的头（使用<beans>标签配置）
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+```
+
+
 
 ## 把对象创建交给Spring
+
 - 暂时使用bean.xml配置需要Spring创建的Bean对象
 
 ## Spring中ApplicationContext的3个常用实现类
