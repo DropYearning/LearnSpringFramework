@@ -15,11 +15,6 @@ public class AccountServiceImpl implements IAccountService {
 
     // 业务层需要调用持久层
     private IAccountDao accountDao;
-    private TransactionManager txManager;
-
-    public void setTxManager(TransactionManager txManager) {
-        this.txManager = txManager;
-    }
 
     public void setAccountDao(IAccountDao accountDao) {
         this.accountDao = accountDao;
@@ -59,6 +54,7 @@ public class AccountServiceImpl implements IAccountService {
      */
     @Override
     public void transfer(String sourceName, String targetName, float money) {
+        System.out.println("transfer开始...");
             // 2.1 根据名称查询转出账户余额
         Account source = accountDao.findAccountByName(sourceName);
             // 2.2 根据名称查询转入账户

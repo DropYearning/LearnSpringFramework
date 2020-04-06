@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -27,6 +28,7 @@ public class AccountServiceTest {
 
     // 需要替换成spring提供的main方法之后才能使用
     @Autowired
+    @Qualifier("proxyAccountService")
     private IAccountService as = null;
 
     @Test
