@@ -77,7 +77,7 @@
 - 切面内引用：`<aop:pointcut id="accountServiceImplPt" expression="execution(* com.study.service.impl.*.*(..))"/>`
     - 此标签是写在<aop:aspect>标签内部，只能被当前aspect标签使用
     - 配置切入点表达式，id属性用于指定表达式的唯一标志，expression指定表达式内容
-- # 切面外所有切面可用的引用：提出至外面`<aop:pointcut id="accountServiceImplPt" expression="execution(* com.study.service.impl.*.*(..))"/>`
+- 切面外所有切面可用的引用：提出至外面 `<aop:pointcut id="accountServiceImplPt" expression="execution(* com.study.service.impl.*.*(..))"/>`
     - **该标签必须出现在<aop:config>内部所有的<aop:aspect>标签之前**！
     - 此标签是写在<aop:config>标签内部, 能被整个aop config内配置的所有aspect引用
 
