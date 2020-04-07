@@ -18,21 +18,15 @@ public class BeanFactory {
         this.txManager = txManager;
     }
 
+    // set用于xml反射获取实例，需要加final
     public final void setAccountService(IAccountService accountService) {
         this.accountService = accountService;
     }
 
-    // 获取Service的代理对象
+    // BeanFactory中获取Service的代理对象的方法, 返回的是一个增强了的AccountServiceImpl的代理类
     public  IAccountService getAccountService(){
         return (IAccountService)Proxy.newProxyInstance(accountService.getClass().getClassLoader(), accountService.getClass().getInterfaces(), new InvocationHandler() {
-            /**
-             * 添加事务的支持
-             * @param proxy
-             * @param method
-             * @param args
-             * @return
-             * @throws Throwable
-             */
+            //添加事务的支持
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 Object rtValue = null;

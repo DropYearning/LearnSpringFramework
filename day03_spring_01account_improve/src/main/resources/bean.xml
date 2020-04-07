@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <!--配置代理的service对象-->
+    <!--配置代理的service对象(支持事务控制)-->
     <bean id="proxyAccountService" factory-bean="beanFactory" factory-method="getAccountService"></bean>
 
     <!--配置beanfactory-->

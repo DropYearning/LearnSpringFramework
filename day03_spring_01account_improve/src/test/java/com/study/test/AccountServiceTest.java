@@ -27,9 +27,10 @@ public class AccountServiceTest {
 
 
     // 需要替换成spring提供的main方法之后才能使用
+    // 配置好代理的service对象(支持事务控制)之后，Spring容器当中会有2个同类型的AccountService，需要使用@Qualifier明确是用哪一个
     @Autowired
     @Qualifier("proxyAccountService")
-    private IAccountService as = null;
+    private IAccountService as;
 
     @Test
     public void testTransfer() {
