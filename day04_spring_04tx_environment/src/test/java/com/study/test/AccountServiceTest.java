@@ -19,8 +19,6 @@ import java.util.List;
  * 使用junit单元测试
  * 配置spring整合Junit
  */
-
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:bean.xml")
 public class AccountServiceTest {

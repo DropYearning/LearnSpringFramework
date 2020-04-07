@@ -3,7 +3,6 @@ package com.study.service.impl;
 import com.study.dao.IAccountDao;
 import com.study.domain.Account;
 import com.study.service.IAccountService;
-import com.study.utils.TransactionManager;
 
 import java.util.List;
 
@@ -20,31 +19,13 @@ public class AccountServiceImpl implements IAccountService {
         this.accountDao = accountDao;
     }
 
-    @Override
-    public List<Account> findAllAccount() {
-        return  accountDao.findAllAccount();
-    }
 
     @Override
     public Account findAccountById(Integer accountId) {
        return accountDao.findAccountById(accountId);
     }
 
-    @Override
-    public void saveAccount(Account account) {
-        accountDao.saveAccount(account);
 
-    }
-
-    @Override
-    public void updateAccount(Account account) {
-        accountDao.updateAccount(account);
-    }
-
-    @Override
-    public void deleteAccount(Integer accountId) {
-        accountDao.deleteAccount(accountId);
-    }
 
     /**
      * 这里的转账操作只是示意，实际业务中肯定不能这样写
@@ -65,10 +46,8 @@ public class AccountServiceImpl implements IAccountService {
         target.setMoney(target.getMoney() + money);
             // 2.5 更新转出账户
         accountDao.updateAccount(source);
-        //int i = 1/0;
+        int i = 1/0;
             // 2.6 更新转入账户
         accountDao.updateAccount(target);
-
-
     }
 }
