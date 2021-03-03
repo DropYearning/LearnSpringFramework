@@ -26,10 +26,17 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--把对象的创建交给Spring来管理-->
+<!--    <bean id="accountService" class="com.study.service.impl.AccountServiceImpl"></bean>-->
+
+
+    <!--告知Spring在创建容器时要扫描的包！配置所需要的标签不是在beans这个约束中，而是一个名称为context名称空间和约束中-->
+    <context:component-scan base-package="com.study"></context:component-scan>
+
+
+</beans>
 ```
 
-`<context:component-scan base-package="com.study"></context:component-scan>`
-扫描该包和该包下的所有子包上的注解
 
 ## 用于创建对象的注解
 - 它们的作用就和XML文件中编写一个<bean>标签实现的功能是一样的
