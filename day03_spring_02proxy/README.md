@@ -21,7 +21,7 @@
     
 > 动态代理和装饰着模式的区别是：装饰者模式一开始必须有一个类，而动态代理是随着使用过程创建和加载
 
-## 基于接口的动态代理
+## 基于接口的动态代理（被代理的类必须实现某个接口）
 - 创建代理对象：使用JDK(java.lang.reflection) Proxy类中的newProxyInstance方法
 - `public static Object newProxyInstance​(ClassLoader loader, Class<?>[] interfaces, InvocationHandler h)`
     - ClassLoader:类加载器，它是用于加载代理对象的字节码的，**填的被代理对象的类加载器**
@@ -124,7 +124,7 @@ public class Client {
 
 > 若要代理的类没有实现任何接口时，基于接口的动态代理是无法使用的
     
-## 基于子类的动态代理（借助Cglib实现）
+## 基于子类的动态代理（借助Cglib实现，被代理的被不能是Final的最终类）
 - cglib的Maven依赖如下：
     ```
           <dependency>
