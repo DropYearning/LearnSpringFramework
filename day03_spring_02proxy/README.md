@@ -7,6 +7,35 @@
 - **代理模式**是一种**结构型设计模式**， 让你能够提供对象的替代品或其占位符。 代理控制着对于原对象的访问， 并允许在将请求提交给对象前后进行一些处理。
 - 代理对象先执行增强方法，再执行原方法。
 
+## 例子：要代理的接口
+```java
+/**
+ * 对生产厂家行为的抽象接口
+ */
+public interface IProducer {
+    public void saleProduct(float money);
+
+    // 售后服务
+    public void afterService(float money);
+}
+
+/**
+ * 一个生产者（厂家向代理卖货，或者向代理提供售后服务）
+ */
+public class Producer implements IProducer{
+
+    // 销售
+    public void saleProduct(float money){
+        System.out.println("生产者销售产品，并拿到钱：" + money);
+    }
+
+    // 售后服务
+    public void afterService(float money){
+        System.out.println("生产者提供售后服务，并拿到钱：" + money);
+    }
+}
+```
+
 
 ## 动态代理
 - 动态代理的特点：字节码随用随创建，随用随加载
