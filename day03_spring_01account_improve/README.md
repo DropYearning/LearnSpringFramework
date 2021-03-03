@@ -341,7 +341,7 @@ public void transfer(String sourceName, String targetName, float money) {
     ```
 - 且各个Bean之间的依赖关系十分复杂
 
-## 使用动态代理再改进
+## 再改进：使用动态代理创建带有事务管理的AccountServiceImpl对象.
 - 增加一个工厂类BeanFactory，用于创建**带有事务管理的AccountServiceImpl**对象.
 - BeanFactory依赖于原始的AccountServiceImpl类和TransactionManager类，两者都通过Spring注入BeanFactory，因此需要提供2者的set方法
 - BeanFactory类中通过getAccountService()方法返回一个带有事务控制的IAccountService对象，这里为了增强，使用了JDK动态代理。
