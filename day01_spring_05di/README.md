@@ -57,7 +57,93 @@
 - 用于给Map集合注入的标签有：map, props
 - 结构相同，标签可以互换
 
+```java
+/**
+ * 演示复杂类型的注入
+ */
+public class AccountServiceImpl3 implements IAccountService {
 
+    // 演示下面几种复杂类型的注入
+    private String[] myStrs;
+    private List<String> myList;
+    private Set<String> mySet;
+    private Map<String, String> myMap;
+    private Properties myProps;
+
+    public void setMyStrs(String[] myStrs) {
+        this.myStrs = myStrs;
+    }
+
+    public void setMyList(List<String> myList) {
+        this.myList = myList;
+    }
+
+    public void setMySet(Set<String> mySet) {
+        this.mySet = mySet;
+    }
+
+    public void setMyMap(Map<String, String> myMap) {
+        this.myMap = myMap;
+    }
+
+    public void setMyProps(Properties myProps) {
+        this.myProps = myProps;
+    }
+
+}
+```
+
+```xml
+    <!--复杂类型数据的注入-->
+        <!--ref和value都无法用于复杂类型的注入-->
+        <!--
+            用于给List集合注入的标签有：list array set
+            用于给Map集合注入的标签有：map, props
+            结构相同，标签可以互换
+        -->
+    <bean id="accountService3" class="com.study.service.impl.AccountServiceImpl3" >
+        <property name="myStrs" >
+            <!--String[]的注入-->
+            <array>
+                <value>AAA</value>
+                <value>BBB</value>
+                <value>CCC</value>
+            </array>
+        </property>
+        <property name="myList" >
+            <!--List<String>的注入-->
+            <array>
+                <value>AAA</value>
+                <value>BBB</value>
+                <value>CCC</value>
+            </array>
+        </property>
+        <property name="mySet" >
+            <!--Set<String>的注入-->
+            <array>
+                <value>seta</value>
+                <value>setb</value>
+                <value>setc</value>
+            </array>
+        </property>
+        <property name="myMap">
+            <!--Map<String, String>的注入-->
+            <map>
+                <entry key="testA" value="aaa"></entry>
+                <entry key="testB">
+                    <value>bbb</value>
+                </entry>
+            </map>
+        </property>
+
+        <property name="myProps">
+            <props>
+                <prop key="testC">ccc</prop>
+                <prop key="testD">ddd</prop>
+            </props>
+        </property>
+    </bean>
+```
 
 
 
