@@ -54,7 +54,7 @@ public class Producer implements IProducer{
 - 创建代理对象：使用JDK(java.lang.reflection) Proxy类中的newProxyInstance方法
 - `public static Object newProxyInstance​(ClassLoader loader, Class<?>[] interfaces, InvocationHandler h)`
     - ClassLoader:类加载器，它是用于加载代理对象的字节码的，**填的被代理对象的类加载器**
-    - Class[]:字节码数组，用于让代理对象和被代理对象有相同的方法，**要代理谁就填上谁的类.getClass().getInterfaces()**
+    - Class[]:字节码数组，用于让代理对象和被代理对象有相同的方法，**要代理谁就填上谁的接口.getClass().getInterfaces()**
     - InvocationHandler: 用于提供**增强**的代码。**一般都是填入一个该接口的实现类，通常使用匿名内部类。**此接口的实现类都是谁用谁来写
     - InvocationHandler接口中只有一个方法`invoke`：执行被代理对象的任何接口方法都会经过该方法（拦截功能）
         - invoke方法中含有下面三个参数：
