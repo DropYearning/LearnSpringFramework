@@ -28,6 +28,49 @@ public void transfer(String sourceName, String targetName, float money) {
 
 > 事务控制应该都在业务层
 
+## 问题出在哪？
+为什么转账会失败， 转出方扣钱了，但是转入方没有收到钱
+我们查看bean.xml文件
+```
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 配置Service Bean -->
+    <bean id="accountService" class="com.study.service.impl.AccountServiceImpl">
+        <!-- 注入dao -->
+        <property name="accountDao" ref="accountDao"></property>
+    </bean>
+
+    <!--配置Dao对象 Bean-->
+    <bean id="accountDao" class="com.study.dao.impl.AccountDaoImpl">
+        <!-- 注入QueryRunner -->
+        <property name="runner" ref="runner"></property>
+    </bean>
+
+    <!--配置QueryRunner Bean-->
+        <!--配置QueryRunner配置成多例-->
+    <bean id="runner" class="org.apache.commons.dbutils.QueryRunner" scope="prototype">
+        <!--注入数据源-->
+        <!--使用构造参数注入数据源对象-->
+        <constructor-arg name="ds" ref="dataSource"></constructor-arg>
+    </bean>
+
+    <!-- 配置数据源 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!--连接数据库的必备信息-->
+        <property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/eesy?useSSL=true&amp;serverTimezone=GMT&amp;useUnicode=true&amp;characterEncoding=utf-8"></property>
+        <property name="user" value="root"></property>
+        <property name="password" value="12345678"></property>
+    </bean>
+</beans>
+```
+从bean.xml中我们可以看到，我们将`AccountServiceImpl`实例存入了Spring的容器，`AccountServiceImpl`实例内的`accountDao`也是由Spring注入的。层层递进，`accountDao`中也存在由Spring负责注入的`QueryRunner runner`，`QueryRunner runner`中又存在由Spring负责注入(使用构造函数注入的)的`DataSource ds`。当我们在调用`as.transfer`方法时，在tansfer()方法内一共调用了accountDao的四个方法findAccountByName, findAccountByName, setMoney, setMoney。这四个方法的事务是交给userDao中的QueryRunner控制的, 而QueryRunner的数据库连接来自于Spring负责注入的ds, **该ds连接上的事务是默认自动提交的**。 **因此，这四个方法的事务操作是分开的、单独进行提交的。** 所以当`int i = 1/0;`抛出异常后 `accountDao.updateAccount(target);`的事务没有得到提交，而前面三个事务都已经提交了。**所以，为了解决上面的事务问题，我们希望手动控制事务的提交操作。**
+
+
+
 ## 事务控制工具类
 - ConnectionUtils：
 - TransactionManager：
