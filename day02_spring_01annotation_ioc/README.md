@@ -16,6 +16,7 @@
 ```
 
 ## Spring中使用注解配置的xml头
+注意：在基于注解的配置中，我们还要多拷贝一个 aop 的 jar 包 `spring-aop-5.0. 2. RELEASE`
 告知Spring在创建容器时要扫描的包！配置所需要的标签不是在beans这个约束中，而是一个名称为context名称空间和约束中
 ```
 <?xml version="1.0" encoding="UTF-8"?>
