@@ -21,7 +21,7 @@ public void transfer(String sourceName, String targetName, float money) {
         accountDao.updateAccount(target);
     }
 ```
-- 其中若出现了异常（ int i = 1/0; ）会出现转出方扣钱，转入方没收到钱的问题，如何处理？
+- 其中若出现了异常（ int i = 1/0; ）会出现转出方扣钱，转入方没收到钱的问题，为什么？ —— 尽管此时是有事务机制的（因为没有机制就不可能commit成功造成金额的改变），但是我们
 - ![7aFjy5Y](https://i.imgur.com/7aFjy5Y.png)
 - 可以让所有的accountDao使用同一个connection：
     - **需要使用`ThreadLocal`，对象把Connection和当前线程绑定，从而使一个线程中只有一个能控制事务的对象**。
