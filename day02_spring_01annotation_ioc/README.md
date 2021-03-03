@@ -84,7 +84,7 @@
 - **@Scope**:用于指定Bean的作用范围
     - 属性value：指定范围的取值【singleton(default)/prototype】
 
-## 和生命周期相关的注解(了解)
+## 和生命周期相关的注解
 - 它们的作用就和在bean标签中使用init-method和destroy-method是一样的
 - **@PreDestroy** :指定销毁方法（在Destroy前执行）
 - **@PostConstruct** :指定初始化方法（在构造函数之后执行）
