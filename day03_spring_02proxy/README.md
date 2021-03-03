@@ -147,22 +147,61 @@ public class Client {
            - @param methodProxy：当前执行方法的代理对象
            - 返回值: 和被代理对象有相同的返回值
 ```java
-Producer producer = new Producer();
-Producer cglibProducer = (Producer)Enhancer.create(producer.getClass(), new MethodInterceptor() {
-    @Override
-    public Object intercept(Object o, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
-        Object returnValue = null; // 返回值
-        // 提供增强的代码（比如在这里由经销商proxy提取20%的佣金）
-        // 1 获取方法执行的参数
-        Float money = (Float) args[0];
-        // 2 判断当前方法是不是销售方法
-        if ("saleProduct".equals(method.getName())){
-            returnValue = method.invoke(producer, money*0.8f); // 经销商(proxy)再调用被代理的方法将剩余的销售额转给工厂
-        }
-        return  returnValue;
+/**
+ * 一个生产者(Cglib代理不需要被代理类实现任何接口)
+ */
+public class Producer  {
+
+    // 销售
+    public void saleProduct(float money){
+        System.out.println("生产者销售产品，并拿到钱：" + money);
     }
-});
-cglibProducer.saleProduct(10000f); // cglib经销商卖电脑
+
+    // 售后服务
+    public void afterService(float money){
+        System.out.println("生产者提供售后服务，并拿到钱：" + money);
+    }
+}
+
+/**
+ * 模拟一个消费者通过Cglib代理购买电脑
+ */
+public class Client {
+    public static void main(String[] args) {
+        Producer producer = new Producer();
+
+        /**
+         * 基于子类的动态代理
+         * public Object create(Class[] argumentTypes, Object[] arguments)
+         */
+
+        Producer cglibProducer = (Producer)Enhancer.create(producer.getClass(), new MethodInterceptor() {
+            /**
+             * intercept：执行被代理对象的任何方法都会经过该方法
+             * @param o(proxy):代理对象的引用
+             * @param method:当前执行的方法
+             * @param args:当前执行方法所用的参数
+             * @param methodProxy：当前执行方法的代理对象
+             * @return
+             * @throws Throwable
+             */
+            @Override
+            public Object intercept(Object o, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+                Object returnValue = null; // 返回值
+                // 提供增强的代码（比如在这里由经销商proxy提取20%的佣金）
+                // 1 获取方法执行的参数
+                Float money = (Float) args[0];
+                // 2 判断当前方法是不是销售方法
+                if ("saleProduct".equals(method.getName())){
+                    returnValue = method.invoke(producer, money*0.8f); // 经销商(proxy)再调用被代理的方法将剩余的销售额转给工厂
+                }
+                return  returnValue;
+            }
+        });
+
+        cglibProducer.saleProduct(10000f); // cglib经销商卖电脑
+    }
+}
 ```
 
 ## 动态代理在Spring中的作用
