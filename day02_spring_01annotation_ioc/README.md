@@ -92,3 +92,8 @@
 - `ClassPathXmlApplicationContext ac = new ClassPathXmlApplicationContext("bean.xml");`
 - 注意多例对象和单例对象的销毁。单例对象的销毁才由Spring核心容器负责，多例对象的销毁由GC负责
 
+## 注解和 XML 的选择问题
+- 注解的优势：配置简单，维护方便（我们找到类，就相当于找到了对应的配置）。
+- XML 的优势：修改时，不用改源码。不涉及重新编译和部署。
+
+![jlBiJa](https://gitee.com/pxqp9W/testmarkdown/raw/master/imgs/2021/03/jlBiJa.png)
