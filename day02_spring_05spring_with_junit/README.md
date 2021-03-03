@@ -61,7 +61,7 @@ public class AccountServiceTest {
         - **@ContextConfiguration** : 
             - 【使用XML配置】属性 locations :指定XML文件的位置，并且前面要加上`classpath:`的关键字表示在类路径下
             - 【使用注解配置】属性classes：指定注解类所在的位置（字节码）
-- 接下来就可以在junit测试类的成员中使用 **@Autowired** 注解
+- **接下来就可以在junit测试类的成员中使用 @Autowired注解**
 - 当使用Spring 5.x版本需要整合junit时，需要junit的jar包版本高于4.12及以上
 
 ## 前后对比
