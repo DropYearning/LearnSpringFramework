@@ -59,8 +59,8 @@ public class AccountServiceTest {
     - 在测试类前加上`@RunWith(SpringJUnit4ClassRunner.class)`注解
     - 需要告知Spring的Runner创建IoC容器时是基于XML还是注解，并且说明相应位置
         - **@ContextConfiguration** : 
-            - 【使用XML配置】属性 locations :指定XML文件的位置，并且前面要加上`classpath:`的关键字表示在类路径下
-            - 【使用注解配置】属性classes：指定注解类所在的位置（字节码）
+            - 【使用XML配置】属性 locations :指定XML文件的位置，并且前面要加上`classpath:`的关键字表示在类路径下 `@ContextConfiguration(locations= {"classpath:bean.xml"})`
+            - 【使用注解配置】属性classes：指定注解类所在的位置（字节码）`@ContextConfiguration(classes = SpringConfig.class)`
 - **接下来就可以在junit测试类的成员中使用 @Autowired注解**
 - 当使用Spring 5.x版本需要整合junit时，需要junit的jar包版本高于4.12及以上
 
