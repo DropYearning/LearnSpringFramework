@@ -37,6 +37,91 @@
 
 - 注意：在.java程序中书写jdbc URL时不需要使用`&amp`;来转义`&`；在.xml中中书写jdbc URL时需要使用`&amp;`来转义`&`；在.properties文件中书写时也不需要使用`&amp`;来转义`&`
 
+### 例子
+```java
+/**
+ * jdbc配置类
+ *  JdbcConfig是配置类的一部分，被SpringConfig使用
+ */
+//@Configuration
+@PropertySource("classpath:jdbcConfig.properties")
+public class JdbcConfig {
+
+    @Value("${jdbc.driver}")
+    private String driver;
+
+    @Value("${jdbc.url}")
+    private String url;
+
+    @Value("${jdbc.username}")
+    private String username;
+
+    @Value("${jdbc.password}")
+    private String password;
+
+    /**
+     * 用于创建一个QueryRunner对象
+     * @param dataSource
+     * @return
+     */
+    @Bean(name = "runner")
+    @Scope("prototype")
+    public QueryRunner createQueryRunner(DataSource dataSource){
+        return new QueryRunner(dataSource);
+    }
+
+    /**
+     * 用于创建一个数据源对象
+     * @return
+     */
+    @Bean(name = "dataSource")
+    public DataSource createDataSource(){
+        try {
+            ComboPooledDataSource ds = new ComboPooledDataSource();
+            ds.setDriverClass(driver);
+            // 在.java程序中书写jdbc URL时不需要使用&amp;来转义&
+            // 在.xml中中书写jdbc URL时需要使用&amp;来转义&
+            ds.setJdbcUrl(url);
+            ds.setUser(username);
+            ds.setPassword(password);
+            return ds;
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+/**
+ * 该类是一个配置类，它的作用和bean.xml是一样的
+ *  SpringConfig是一个总的配置类
+ */
+
+@Configuration
+@ComponentScan(basePackages = {"com.study", "config"})
+@Import(JdbcConfig.class)
+public class SpringConfig {
+
+
+}
+
+/**
+ * 测试QueryRunner是否是单例的
+ */
+public class QueryRunnerTest {
+    @Test
+    public void testQueryRunner() {
+        // 1 获取容器
+        ApplicationContext ac = new AnnotationConfigApplicationContext(SpringConfig.class);
+        // 2 得到QueryRunner对象
+        QueryRunner runner = ac.getBean("runner", QueryRunner.class);
+        QueryRunner runner1 = ac.getBean("runner", QueryRunner.class);
+        System.out.println(runner == runner1);
+    }
+}
+
+```
+
+
 ## Spring中使用注解配置的xml头
 告知Spring在创建容器时要扫描的包！配置所需要的标签不是在beans这个约束中，而是一个名称为context名称空间和约束中
 
