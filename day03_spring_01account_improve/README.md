@@ -342,47 +342,63 @@ public void transfer(String sourceName, String targetName, float money) {
     ```
 - 且各个Bean之间的依赖关系十分复杂
 
-## 再改进：使用动态代理创建带有事务管理的AccountServiceImpl对象.
+## 再改进：使用动态代理将AccountServiceImpl与事务处理解耦
 - 增加一个工厂类BeanFactory，用于创建**带有事务管理的AccountServiceImpl**对象.
 - BeanFactory依赖于原始的AccountServiceImpl类和TransactionManager类，两者都通过Spring注入BeanFactory，因此需要提供2者的set方法
-- BeanFactory类中通过getAccountService()方法返回一个带有事务控制的IAccountService对象，这里为了增强，使用了JDK动态代理。
-    - 旧的不带事务控制的getAccountService():
+- BeanFactory类中通过getAccountService()方法返回一个带有事务控制的IAccountService对象，这里为了增强，使用了基于的接口的JDK代理。
+    - BeanFactory工厂类创建增强了的带有事务处理的AccountServiceImpl代理类:
         ```java
-        public  IAccountService getAccountService(){
-              return this.accountService;
-          }  
-        ```
-    - 使用了动态代理带事务控制的getAccountService()：
-        ```java
-        public  IAccountService getAccountService(){
-                return (IAccountService)Proxy.newProxyInstance(accountService.getClass().getClassLoader(), accountService.getClass().getInterfaces(), new InvocationHandler() {      
-                @Override
-                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                    Object rtValue = null;
-                    try{
-                        // 1 开启事务
-                        txManager.beginTransaction();
-                        // 2 执行操作
-                        rtValue = method.invoke(accountService, args);
-                        // 3 提交事务
-                        txManager.commit();
-                        // 4返回结果
-                        return rtValue;
-                    }catch (Exception e){
-                        //回滚操作
-                        txManager.rollback();
-                        throw new RuntimeException("findAllAccount出错");
-                    }finally {
-                        // 释放连接
-                        txManager.release();
-                    }
-                }
-                });
+        /**
+         * 用于创建Service的代理对象的工厂
+         */
+        public class BeanFactory {
+            private  IAccountService accountService;
+            private TransactionManager txManager;
+
+            public void setTxManager(TransactionManager txManager) {
+                this.txManager = txManager;
             }
+
+            // java 8 以及之后的版本有了effective final的概念。这个限制放松了。可以不是final，不过还是不允许重新赋值。
+            // set用于xml反射获取实例，需要加final
+            public final void setAccountService(IAccountService accountService) {
+                this.accountService = accountService;
+            }
+
+            // BeanFactory中获取Service的代理对象的方法, 返回的是一个增强了的AccountServiceImpl的代理类
+            public  IAccountService getAccountService(){
+                return (IAccountService)Proxy.newProxyInstance(accountService.getClass().getClassLoader(),
+                        accountService.getClass().getInterfaces(),
+                        new InvocationHandler() {
+                            //添加事务的支持
+                            @Override
+                            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                                Object rtValue = null;
+                                try{
+                                    // 1 开启事务
+                                    txManager.beginTransaction();
+                                    // 2 执行操作
+                                    rtValue = method.invoke(accountService, args);
+                                    // 3 提交事务
+                                    txManager.commit();
+                                    // 4返回结果
+                                    return rtValue;
+                                }catch (Exception e){
+                                    //回滚操作
+                                    txManager.rollback();
+                                    throw new RuntimeException("findAllAccount出错");
+                                }finally {
+                                    // 释放连接
+                                    txManager.release();
+                                }
+                            }
+                        });
+            }
+        }
         ```
 - 对应bean.xml中修改
     ```xml
-      <!--配置代理的service对象(支持事务控制)-->
+      <!-- 注入配置了代理的AccountService对象(支持事务控制)-->
         <bean id="proxyAccountService" factory-bean="beanFactory" factory-method="getAccountService"></bean>
     
         <!--配置beanfactory-->
@@ -391,6 +407,27 @@ public void transfer(String sourceName, String targetName, float money) {
             <property name="txManager" ref="txManager"></property>
         </bean>
     ```
+- 测试：
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "classpath:bean.xml")
+public class AccountServiceTest {
+
+
+    // 需要替换成spring提供的main方法之后才能使用
+    // 配置好代理的service对象(支持事务控制)之后，Spring容器当中会有2个同类型的AccountService，需要使用@Qualifier明确是用哪一个
+    @Autowired
+    // Spring的IoC容器中当前存在两个AccountServiceImpl的实例，我们这里要使用的是经过动态代理的proxyAccountService
+    // 因此使用@Qualifier注解注明当前要注入的是哪一个AccountServiceImpl实例
+    @Qualifier("proxyAccountService")
+    private IAccountService as;
+
+    @Test
+    public void testTransfer() {
+        as.transfer("aaa", "bbb", 5f);
+    }
+}
+```
 - 使用动态代理之后，去除了实现事务控制的繁冗代码。
 - 但是增加了xml配置上的麻烦和使用动态代理的麻烦
 - 有没有更好的方法？——Spring AOP
