@@ -56,5 +56,6 @@
 - 使用环绕通知不会出现通知顺序的问题
 
 ## 完全不使用XML的开发方式
+添加一个用@Configuration标注的Spring全局配置类
 - **@EnableAspectJAutoProxy** : 添加在Spring配置类前可以替代`<aop:aspectj-autoproxy></aop:aspectj-autoproxy>`
 ![I1x8EXv](https://i.imgur.com/I1x8EXv.png)
