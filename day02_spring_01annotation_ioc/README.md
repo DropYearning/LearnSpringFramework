@@ -47,6 +47,8 @@
     - **@Controller**：一般用在表现层。
     - **@Service**：一般用在业务层。
     - **@Repository**：一般用在持久层。
+- **@Bean**: 明确地指示了一种方法，什么方法呢——产生一个bean的方法，并且交给Spring容器管理；从这我们就明白了为啥@Bean是放在方法的注释上了，因为它很明确地告诉被注释的方法，你给我产生一个Bean，然后交给Spring容器，剩下的你就别管了。产生这个Bean对象的方法Spring只会调用一次，随后这个Spring将会将这个Bean对象放在自己的IOC容器中。
+
 
 ## 用于注入数据的注解
 - 它们的作用就和XML文件中的<bean>标签中的<property>的作用是一样的，相当于`<property name="" ref=""> `或者`<property name="" value="">`
