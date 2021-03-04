@@ -114,18 +114,24 @@ public class Logger {
 
 ### Spring中基于XML的AOP配置步骤
 - 1 把通知的Bean(Logger)也交给Spring管理
-- 2 使用aop:config标签表明开始AOP的配置
-- 3 使用aop:aspect标签表明开始配置切面
+- 2 使用`<aop:config>`标签表明开始AOP的配置
+- 3 使用`<aop:aspect>`标签表明开始配置切面
     - id属性：给切面提供一个唯一标志
     - ref属性：指定通知类(Logger)bean的id
-- 4 在aop:aspect标签的内部使用对应的标签来配置通知的类型:前置通知,后置通知,异常通知,最终通知,环绕通知。 
-    - 例如<aop:before> ...
+- 4 在`<aop:aspect>`标签的内部使用对应的标签来配置通知的类型:前置通知,后置通知,异常通知,最终通知,环绕通知。 
+    - <aop:aspect>：使用aspectJ方式实现AOP需要的标签。
+    - <aop:before /> ：为指定的切点绑定前置通知，该通知会先于切点方法执行。
+    - <aop:after />：为指定的切点绑定后置通知，会后于切点方法执行。
+    - <aop:after-returning />：为指定的切点绑定后置通知，会后于切点方法执行。
+    - <aop:throwing /> ：为指定的切点方法绑定异常通知，当切点方法执行时出现异常，就会执行该通知。
+    - <aop:around />：为指定的切点方法绑定环绕通知。
     - method属性用于指定通知类中哪一个方法是（前置）通知
-- 5 <aop:before>中的pointcut属性：用于指定切入点表达式，该表达式的含义是指要对业务层中的哪些方法增强
-    - 切入点表达式的写法：
-        - 关键字:execution(表达式)
+- 5 配置`pointcut`切入点表达式：用于指定切入点表达式，该表达式的含义是指要对业务层中的哪些方法增强
+    - 切入点表达式的写法：`execution(表达式)`
         - 表达式：访问修饰符 + 返回值 + 包名.类名.方法名（参数列表）
-        - 标准的表达式写法：`public void com.study.service.impl.AccountServiceImpl.saveAccount()`
+        - 标准的表达式写法：`<aop:before method="printLog" pointcut=""execution(public void com.study.service.impl.AccountServiceImpl.saveAccount())></aop:before>`
+        - 简略的表达式写法：`execution(* com.study.service.impl.*.*(..))` 【匹配com.study.service.impl包下的所有类的所有方法】
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -140,7 +146,8 @@ public class Logger {
         <!--配置切面-->
         <aop:aspect id="logAdvice" ref="logger">
             <!--配置通知的类型并且建立通知方法和切入点方法的关联：printLog是前置通知-->
-            <!--**实际开发中切入点表达式的通常写法**：切到业务层实现类下的所有方法-->
+            <!-- public void com.study.service.impl.AccountServiceImpl.saveAccount() -->
+            <!--**实际开发中切入点表达式的通常写法**：关联到到业务层实现类下的所有方法-->
             <aop:before method="printLog" pointcut="execution(* com.study.service.impl.*.*(..))"></aop:before>
         </aop:aspect>
 
@@ -148,7 +155,7 @@ public class Logger {
 </beans>
 ```
 
-### 切入点表达式的写法
+## 切入点表达式的写法
 - 访问修饰符可以省略
 - 返回值可以使用通配符`*` ，表示任意返回值
 - 包名可以使用通配符表示任意包，但是有几级包就需要写几个`*.`
@@ -158,9 +165,10 @@ public class Logger {
 - 类名和方法名都可以使用`*`来实现通配
     - `execution( * *..*.*())`增强所有无参数方法
 - 参数列表可以直接写数据类型：基本类型写名称、引用类型写`包名.类名`的方式
-    - 例如`java.lang.String`
-- 参数类型可以使用通配符`*`表示任意类型，但是必须有参数
-- 可以使用`..`表示有无参数均可，有参数可以是任意类型、任意个数
+  - 例如`java.lang.String`
+  - `pointcut="execution(* com.study.service.impl.*.*(int))`
+  - **参数类型可以使用通配符`*`表示任意类型，但是必须有参数**
+  - 可以使用`..`表示有无参数均可，有参数可以是任意类型、任意个数: `pointcut="execution(* com.study.service.impl.*.*(..))`
 - 全通配方法：`* *..*.*(..)`
 - **实际开发中切入点表达式的通常写法**：切到业务层实现类下的所有方法
     - 例如:`execution(* com.study.service.impl.*.*(..))`
