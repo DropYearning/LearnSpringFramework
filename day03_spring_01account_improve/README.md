@@ -235,6 +235,7 @@ public class AccountDaoImpl implements IAccountDao {
     <bean id="accountService" class="com.study.service.impl.AccountServiceImpl">
         <!-- 注入dao -->
         <property name="accountDao" ref="accountDao"></property>
+        <property name="txManager" ref="txManager"></property>
     </bean>
 
     <!--配置Dao对象 Bean-->
